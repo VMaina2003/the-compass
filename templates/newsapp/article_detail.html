@@ -1,0 +1,41 @@
+{% extends "newsapp/base.html" %}
+
+{% block content %}
+<div class="container mx-auto px-6 py-8 max-w-4xl">
+    
+    <!-- Category -->
+    <p class="inline-block text-sm bg-red-100 text-red-600 px-3 py-1 rounded-md mb-4">
+        {{ article.category }}
+    </p>
+
+    <!-- Title -->
+    <h1 class="text-3xl font-bold text-gray-900 mb-4">
+        {{ article.title }}
+    </h1>
+
+    <!-- Writer & Time -->
+    <p class="text-sm text-gray-500 mb-6">
+        By <span class="font-medium">{{ article.writer }}</span> • 
+        <span class="text-gray-400">{{ article.published_at|timesince }} ago</span>
+    </p>
+
+    <!-- Image -->
+    {% if article.image %}
+    <img src="{{ article.image.url }}" alt="{{ article.title }}" 
+         class="w-full h-96 object-cover rounded-xl shadow mb-6">
+    {% endif %}
+
+    <!-- Content -->
+    <div class="prose prose-lg max-w-none text-gray-800 leading-relaxed">
+        {{ article.content|linebreaks }}
+    </div>
+
+    <!-- Back link -->
+    <div class="mt-8">
+        <a href="{% url 'index' %}" 
+           class="text-red-600 font-medium hover:underline">
+           ← Back to Top News
+        </a>
+    </div>
+</div>
+{% endblock %}
