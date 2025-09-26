@@ -25,6 +25,7 @@ class NewsArticle(models.Model):
     def __str__(self):
         return self.title
     
+    # add comments relationship
     
 class Comment(models.Model):
     article = models.ForeignKey(NewsArticle, on_delete=models.CASCADE, related_name='comments')
