@@ -4,7 +4,7 @@
 <div class="container mx-auto px-6 py-8 max-w-4xl">
     
     <!-- Category -->
-    <p class="inline-block text-sm bg-red-100 text-red-600 px-3 py-1 rounded-md mb-4">
+    <p class="inline-block text-sm bg-blue-100 text-blue-600 px-3 py-1 rounded-md mb-4">
         {{ article.category }}
     </p>
 
@@ -15,7 +15,7 @@
 
     <!-- Writer & Time -->
     <p class="text-sm text-gray-500 mb-6">
-        By <span class="font-medium">{{ article.writer }}</span> • 
+        By <span class="font-medium">{{ article.writer.get_display_name }}</span> • 
         <span class="text-gray-400">{{ article.published_at|timesince }} ago</span>
     </p>
 
@@ -26,30 +26,86 @@
     {% endif %}
 
     <!-- Content -->
-    <div class="prose prose-lg max-w-none text-gray-800 leading-relaxed">
+    <div class="prose prose-lg max-w-none text-gray-800 leading-relaxed mb-8">
         {{ article.content|linebreaks }}
     </div>
 
-    <!-- Back link -->
-    <div class="mt-8">
-        <a href="{% url 'index' %}" 
-           class="text-red-600 font-medium hover:underline">
-           ← Back to Top News
-        </a>
-    </div>
-    <div>
-        <!-- add comment write box -->
-        <h2 class="text-2xl font-bold mt-10 mb-4 text-gray-800">Comments</h2>
-        {% if user.is_authenticated %}
+    <!-- Comments Section -->
+    <div class="mt-10">
+        <h2 class="text-xl font-semibold text-gray-800 mb-4">Comments</h2>
+
+        <!-- Add Comment Form -->
         <form method="post" class="mb-6">
             {% csrf_token %}
-            <textarea name="content" rows="4" required
-                      class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 resize-none"
-                      placeholder="Write your comment here..."></textarea>
-            <button type="submit"
-                    class="mt-2 bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition">
+            {{ form.as_p }}
+            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
                 Post Comment
             </button>
+        </form>
+
+        
+
+
+
+        <!-- Display Comments -->
+        <div class="space-y-6">
+            {% for comment in comments %}
+                <div class="border p-4 rounded-md">
+                    <p class="text-sm text-gray-600 mb-2">
+                        {% if comment.author_name %}
+                            {{ comment.author_name.username }}
+                        {% else %}
+                            Anonymous
+                        {% endif %}
+                        • {{ comment.created_at|timesince }} ago
+                    </p>
+                    <p class="text-gray-800 mb-3">{{ comment.content }}</p>
+
+                    <!-- Reply Form -->
+                    <form method="post" class="ml-6 mb-3">
+                        {% csrf_token %}
+                        <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                        <textarea name="content" rows="2" placeholder="Write a reply..."
+                                  class="w-full p-2 border rounded-md mb-2"></textarea>
+                        <button type="submit" class="bg-gray-600 text-white px-3 py-1 rounded-md hover:bg-gray-700">
+                            Reply
+                        </button>
+                        <!-- delete own comment -->
+                        {% if user.is_authenticated and comment.author_name == user %}
+                            <button formaction="{% url 'delete_comment' comment.id %}" 
+                                    class="bg-red-600 text-white px-3 py-1 rounded-md hover:bg-red-700 ml-2">
+                                Delete
+                            </button>
+                        {% endif %}
+            
+
+                    <!-- Replies -->
+                    {% for reply in comment.replies.all %}
+                        <div class="ml-6 mt-3 border-l-2 pl-3">
+                            <p class="text-sm text-gray-600">
+                                {% if reply.author_name %}
+                                    {{ reply.author_name.username }}
+                                {% else %}
+                                    Anonymous
+                                {% endif %}
+                                • {{ reply.created_at|timesince }} ago
+                            </p>
+                            <p class="text-gray-700">{{ reply.content }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% empty %}
+                <p class="text-gray-500">No comments yet. Be the first to comment!</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Back link -->
+    <div class="mt-10">
+        <a href="{% url 'index' %}" 
+           class="text-blue-600 font-medium hover:underline">
+           ← Back to Top News
+        </a>
     </div>
 </div>
 {% endblock %}
