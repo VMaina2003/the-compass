@@ -94,9 +94,9 @@ WSGI_APPLICATION = 'news.wsgi.application'
 # }
 
 DATABASES = {
-    'default':  dj_database_url.config(
-        'DATABASE_URL', 
-        )
+    'default':  dj_database_url.parse(config(
+        'DATABASE_URL'
+        ))
 }
 
 
