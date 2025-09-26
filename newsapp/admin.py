@@ -1,12 +1,6 @@
 from django.contrib import admin
-from .models import Category, Writer, NewsArticle, Comment
+from .models import Category, NewsArticle, Comment
 
-@admin.register(Writer)
-class WriterAdmin(admin.ModelAdmin):
-    list_display = ('name', 'email')
-    search_fields = ('name', 'email')
-    ordering = ('name',)    
-    
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ('name',)

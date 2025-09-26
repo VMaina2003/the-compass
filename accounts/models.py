@@ -62,6 +62,11 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     
     def is_viewer(self):
         return self.role == self.UserRole.VIEWER
+    
+    def get_display_name(self):
+        if self.first_name or self.last_name:
+            return f"{self.first_name} {self.last_name}".strip()
+        return self.username if self.username else self.email
 
 class Profile(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)

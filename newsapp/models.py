@@ -1,14 +1,6 @@
 from django.db import models
 from cloudinary.models import CloudinaryField
-
-class Writer(models.Model):
-    name = models.CharField(max_length=100)
-    bio = models.TextField(blank=True, null=True)
-    email = models.EmailField(unique=True)
-    writer_profile_pic = CloudinaryField('image', blank=True, null=True)
-    
-    def __str__(self):
-        return self.name
+from accounts.models import CustomUser
 
 class Category(models.Model):
     name = models.CharField(max_length=50, unique=True)
@@ -18,7 +10,12 @@ class Category(models.Model):
         return self.name
 
 class NewsArticle(models.Model):
-    writer = models.ForeignKey(Writer, on_delete=models.CASCADE, related_name='articles')
+    writer = models.ForeignKey(
+        CustomUser, 
+        on_delete=models.CASCADE, 
+        related_name='articles', 
+        limit_choices_to={'role__in': ['WRITER', 'EDITOR', 'ADMIN']}
+        )
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, related_name='articles')
     title = models.CharField(max_length=200)
     content = models.TextField()
@@ -31,7 +28,7 @@ class NewsArticle(models.Model):
     
 class Comment(models.Model):
     article = models.ForeignKey(NewsArticle, on_delete=models.CASCADE, related_name='comments')
-    author_name = models.ForeignKey('accounts.CustomUser', on_delete=models.CASCADE, related_name='comments')
+    author_name = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='comments')
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 

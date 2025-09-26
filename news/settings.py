@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 from decouple import config
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -75,16 +76,30 @@ WSGI_APPLICATION = 'news.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': config('DATABASE_ENGINE'),
+#         'NAME': config('DATABASE_NAME'),
+#         'USER': config('DATABASE_USER'),
+#         'PASSWORD': config('DATABASE_PASSWORD'),
+#         'HOST': config('DATABASE_HOST'),
+#         'PORT': config('DATABASE_PORT'),
+#     }
+# }
+
+
+# DATABASES = {
+#     'default': config('DATABASE_URL', cast=lambda v: dj_database_url.parse(v, conn_max_age=600)
+#     )
+# }
+
 DATABASES = {
-    'default': {
-        'ENGINE': config('DATABASE_ENGINE'),
-        'NAME': config('DATABASE_NAME'),
-        'USER': config('DATABASE_USER'),
-        'PASSWORD': config('DATABASE_PASSWORD'),
-        'HOST': config('DATABASE_HOST'),
-        'PORT': config('DATABASE_PORT'),
-    }
+    'default':  dj_database_url.config(
+        'DATABASE_URL', 
+        default='sqlite:///db.sqlite3'
+        )
 }
+
 
 # cloudinary configuration
 import cloudinary

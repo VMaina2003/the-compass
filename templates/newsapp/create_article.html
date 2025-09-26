@@ -1,0 +1,40 @@
+{% extends "newsapp/base.html" %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto mt-8 bg-white p-6 rounded-xl shadow-md">
+    <h2 class="text-2xl font-bold mb-4 text-gray-800">Create News Article</h2>
+    <form method="post" enctype="multipart/form-data" class="space-y-4">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        
+        <div>
+            {{ form.title.label_tag }}
+            {{ form.title }}
+            {{ form.title.errors }}
+        </div>
+
+        <div>
+            {{ form.content.label_tag }}
+            {{ form.content }}
+            {{ form.content.errors }}
+        </div>
+
+        <div>
+            {{ form.image.label_tag }}
+            {{ form.image }}
+            {{ form.image.errors }}
+        </div>
+
+        <div>
+            {{ form.category.label_tag }}
+            {{ form.category }}
+            {{ form.category.errors }}
+        </div>
+
+        <button type="submit" 
+                class="w-full bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition">
+            Publish Article
+        </button>
+    </form>
+</div>
+{% endblock %}
