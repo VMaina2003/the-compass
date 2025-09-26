@@ -38,21 +38,26 @@
         </a>
     </div>
     <div>
-
         <!-- add comment box -->
-        <h2 class="text-2xl font-bold mt-10 mb-4 text-gray-800"  >Comments</h2>
         {% if user.is_authenticated %}
-        <form method="post" class="space-y-4 mb-8">
-            {% csrf_token %}
-            {{ comment_form.non_field_errors }}
-            <div>
-                {{ comment_form.content.label_tag }}
-                {{ comment_form.content }}
-                {{ comment_form.content.errors }}
-            </div>
-            <button type="submit" 
-                    class="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition">
-                Post Comment
-            </button>
-     
+            <form method="post" class="mt-6">
+                {% csrf_token %}
+                {{ comment_form.non_field_errors }}
+                <div>
+                    {{ comment_form.content.label_tag }}
+                    {{ comment_form.content }}
+                    {{ comment_form.content.errors }}
+                </div>
+                <button type="submit" 
+                        class="mt-4 bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition">
+                    Add Comment
+                </button>
+            </form>
+        {% else %}
+            <p class="mt-6 text-sm text-gray-600">
+                <a href="{% url 'login' %}" class="text-blue-600 hover:underline">Login</a> to add a comment.
+            </p>
+        {% endif %}
+    </div>
+</div>
 {% endblock %}
