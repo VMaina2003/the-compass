@@ -96,7 +96,6 @@ WSGI_APPLICATION = 'news.wsgi.application'
 DATABASES = {
     'default':  dj_database_url.config(
         'DATABASE_URL', 
-        default='sqlite:///db.sqlite3'
         )
 }
 
