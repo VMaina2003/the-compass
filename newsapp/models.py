@@ -37,3 +37,13 @@ class Comment(models.Model):
         if self.author_name:
             return f'Comment by {self.author_name.username} on {self.article.title}'
         return f'Comment by Anonymous on {self.article.title}'
+    
+class newsletter(models.Model):
+    email = models.EmailField(unique=True)
+    confirmation_token = models.CharField(max_length=100, blank=True, null=True)
+    unsubscription_token = models.CharField(max_length=100, blank=True, null=True)
+    subscribed_at = models.DateTimeField(auto_now_add=True)
+    is_confirmed = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.email

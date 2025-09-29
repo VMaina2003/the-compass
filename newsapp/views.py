@@ -1,9 +1,15 @@
 from django.shortcuts import render, redirect, get_object_or_404   
-from .models import NewsArticle, Category, Comment
+from .models import NewsArticle, Category, Comment , newsletter
 from .forms import NewsArticleForm, UpdateNewsArticleForm
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
 from .forms import CommentForm
+from .serializers import NewsArticleSerializer, CategorySerializer, CommentSerializer , NewsletterSerializer 
+from rest_framework import viewsets
+from .permissions import IsAdminOrEditorOrOwnerWriter   
+from .forms import NewsletterForm
+import uuid
+from .models import newsletter
 
 
 def index(request):
@@ -100,5 +106,86 @@ def delete_comment(request, comment_id):
         comment.delete()
         return redirect("article_detail", article_id=article_id)
     return render(request, "newsapp/article_detail", {"comment": comment})
+
+
+# subscribe to newsletter
+@login_required
+def subscribe_newsletter(request):
+    user_email = request.user.email
+    subscribed = newsletter.objects.filter(email=user_email).exists()
+
+    if request.method == "POST":
+        if subscribed:
+            # Unsubscribe
+            newsletter.objects.filter(email=user_email).delete()
+            subscribed = False
+        else:
+            # Subscribe
+            newsletter.objects.create(
+                email=user_email,
+                is_confirmed=True  # since logged-in users are trusted
+            )
+            subscribed = True
+
+    return render(
+        request,
+        "newsapp/subscribe_newsletter.html",
+        {
+            "subscribed": subscribed,
+            "email": user_email,
+        },
+    )
+
+# confirm subscription via token
+
+
+def confirm_subscription(request, token):
+    subscription = get_object_or_404(newsletter, confirmation_token=token)
+    subscription.is_confirmed = True
+    subscription.save()
+    return render(request, "newsapp/subscription_confirmed.html", {"email": subscription.email})
+
+
+# unsubscribe from newsletter via token
+def unsubscribe_newsletter(request, token):
+    subscription = get_object_or_404(newsletter, unsubscription_token=token)
+    email = subscription.email
+    subscription.delete()
+    return render(request, "newsapp/unsubscribed.html", {"email": email})
+
+
+# confirm subscription via token
+def confirm_subscription(request, token):
+    subscription = get_object_or_404(newsletter, confirmation_token=token)
+    subscription.is_confirmed = True
+    subscription.save()
+    return render(request, "newsapp/subscription_confirmed.html")
+
+# unsubscribe from newsletter
+def unsubscribe_newsletter(request, token):
+    subscription = get_object_or_404(newsletter, unsubscription_token=token)
+    subscription.delete()
+    return render(request, "newsapp/unsubscribed.html")
+
+
     
    
+
+class NewsArticleViewSet(viewsets.ModelViewSet):
+    queryset = NewsArticle.objects.all()
+    serializer_class = NewsArticleSerializer
+    permission_classes = [IsAdminOrEditorOrOwnerWriter]
+    
+    def perform_create(self, serializer):
+        serializer.save(writer=self.request.user)
+class CategoryViewSet(viewsets.ModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer   
+    
+class CommentViewSet(viewsets.ModelViewSet):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer   
+    
+class NewsletterViewSet(viewsets.ModelViewSet):
+    queryset = newsletter.objects.all()
+    serializer_class = NewsletterSerializer

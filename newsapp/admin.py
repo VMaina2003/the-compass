@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Category, NewsArticle, Comment
+from .models import Category, NewsArticle, Comment, newsletter
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
@@ -21,3 +21,15 @@ class CommentAdmin(admin.ModelAdmin):
     list_filter = ('created_at',)
     ordering = ('-created_at',)
     
+@admin.register(newsletter)
+class NewsletterAdmin(admin.ModelAdmin):
+    list_display = ('email', 'subscribed_at')
+    search_fields = ('email',)
+    list_filter = ('subscribed_at',)
+    ordering = ('-subscribed_at',)
+    
+    
+# Register your models here.
+# admin.site.register(Category, CategoryAdmin)
+# admin.site.register(NewsArticle, NewsArticleAdmin)
+# admin.site.register(Comment, CommentAdmin)

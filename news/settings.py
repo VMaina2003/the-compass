@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'newsapp',
     'accounts',
+    'cloudinary',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -76,28 +78,24 @@ WSGI_APPLICATION = 'news.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': config('DATABASE_ENGINE'),
-#         'NAME': config('DATABASE_NAME'),
-#         'USER': config('DATABASE_USER'),
-#         'PASSWORD': config('DATABASE_PASSWORD'),
-#         'HOST': config('DATABASE_HOST'),
-#         'PORT': config('DATABASE_PORT'),
-#     }
-# }
-
-
-# DATABASES = {
-#     'default': config('DATABASE_URL', cast=lambda v: dj_database_url.parse(v, conn_max_age=600)
-#     )
-# }
-
 DATABASES = {
-    'default':  dj_database_url.parse(config(
-        'DATABASE_URL'
-        ))
+    'default': {
+        'ENGINE': config('DATABASE_ENGINE'),
+        'NAME': config('DATABASE_NAME'),
+        'USER': config('DATABASE_USER'),
+        'PASSWORD': config('DATABASE_PASSWORD'),
+        'HOST': config('DATABASE_HOST'),
+        'PORT': config('DATABASE_PORT'),
+    }
 }
+
+
+
+# DATABASES = {
+#     'default':  dj_database_url.parse(config(
+#         'DATABASE_URL'
+#         ))
+# }
 
 
 # cloudinary configuration

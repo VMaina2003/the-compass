@@ -1,4 +1,4 @@
-from .models import NewsArticle ,Comment
+from .models import NewsArticle ,Comment , newsletter
 from django import forms    
 
 class NewsArticleForm(forms.ModelForm):
@@ -34,3 +34,14 @@ class CommentForm(forms.ModelForm):
                 'placeholder': 'Write your comment...'
             }),
         }
+        
+class NewsletterForm(forms.Form):
+    email = forms.EmailField(widget=forms.EmailInput(
+        attrs={'class': 'w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600', 'placeholder': 'Enter your email'}
+    ))
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if not email:
+            raise forms.ValidationError("Email is required")
+        return email
+    
