@@ -14,6 +14,7 @@ from pathlib import Path
 from decouple import config
 import dj_database_url
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -43,6 +44,9 @@ INSTALLED_APPS = [
     'accounts',
     'cloudinary',
     'rest_framework',
+    'drf_yasg',
+    'rest_framework_simplejwt',
+    
 ]
 
 MIDDLEWARE = [
@@ -156,3 +160,19 @@ EMAIL_HOST_USER = config('EMAIL_HOST_USER',)
 EMAIL_HOST_PASSWORD =config('EMAIL_HOST_PASSWORD',)
 
 AUTH_USER_MODEL = 'accounts.customUser'
+
+from datetime import timedelta
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ),
+}
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+    "ROTATE_REFRESH_TOKENS": False,
+    "BLACKLIST_AFTER_ROTATION": True,
+    "AUTH_HEADER_TYPES": ("Bearer",),
+}

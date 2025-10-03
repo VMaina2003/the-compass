@@ -28,6 +28,10 @@ class NewsletterAdmin(admin.ModelAdmin):
     list_filter = ('subscribed_at',)
     ordering = ('-subscribed_at',)
     
+
+
+    
+     
     
 # Register your models here.
 # admin.site.register(Category, CategoryAdmin)
